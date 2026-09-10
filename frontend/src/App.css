@@ -1,0 +1,441 @@
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary: #f8f9ff;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --red: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--secondary);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.mindmate {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 60px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 1px;
+}
+
+.tagline {
+  color: var(--text-light);
+  font-size: 16px;
+}
+
+/* Hero */
+
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.badge {
+  font-size: 14px;
+  color: var(--text);
+  background: white;
+  padding: 10px 18px;
+  border-radius: 999px;
+  margin-bottom: 24px;
+}
+
+/* Main heading */
+
+.hero h1 {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.hero h1 span {
+  color: var(--red);
+  display: block;
+}
+
+/* Description */
+
+.hero p {
+  font-size: 18px;
+  color: var(--text-light);
+  max-width: 720px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+/* Buttons */
+
+.buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.primary-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-btn {
+  background: white;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  background: #eeeeff;
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .header {
+    padding: 20px;
+  }
+
+  .hero {
+    padding: 50px 20px;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+}
+.hero h1 {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+/* BLACK + GREEN THEME */
+
+:root {
+  --green: #16a34a;
+  --green-dark: #15803d;
+}
+
+/* Logo */
+.logo {
+  color: var(--green) !important;
+}
+
+/* Heading accent */
+.hero h1 span {
+  color: var(--green) !important;
+}
+
+/* Start Game button */
+.primary-btn {
+  background: var(--green) !important;
+  border-color: var(--green) !important;
+}
+
+.primary-btn:hover {
+  background: var(--green-dark) !important;
+}
+
+/* View Progress button */
+.secondary-btn {
+  color: var(--green) !important;
+  border-color: var(--green) !important;
+}
+
+.secondary-btn:hover {
+  background: var(--green) !important;
+  color: white !important;
+}
+/* GAME SELECTION PAGE */
+
+.games-page {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.games-page h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.games-page > p {
+  font-size: 18px;
+  color: var(--text-light);
+  margin-bottom: 40px;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  color: var(--green);
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+
+.game-cards {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.game-card {
+  width: 260px;
+  padding: 30px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.game-icon {
+  font-size: 45px;
+  margin-bottom: 15px;
+}
+
+.game-card h2 {
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.game-card p {
+  color: var(--text-light);
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.game-card .primary-btn {
+  width: 100%;
+}
+/* MEMORY MATCH GAME */
+
+.memory-page {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.memory-page h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.memory-page > p {
+  color: var(--text-light);
+  font-size: 18px;
+  margin-bottom: 25px;
+}
+
+.game-info {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-bottom: 25px;
+  color: var(--green);
+}
+
+.memory-grid {
+  width: 500px;
+  max-width: 90%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.memory-card {
+  height: 100px;
+  border: 2px solid var(--green);
+  border-radius: 15px;
+  background: white;
+  color: var(--green);
+  font-size: 36px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.memory-card:hover {
+  transform: scale(1.05);
+  background: #f0fdf4;
+}
+
+.memory-card.flipped {
+  background: var(--green);
+  color: white;
+}
+
+.success-message {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 500px;
+  background: #f0fdf4;
+  border: 2px solid var(--green);
+  border-radius: 15px;
+  color: var(--green-dark);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.success-message .primary-btn {
+  margin-top: 15px;
+}
+/* =========================
+   PROGRESS PAGE
+   ========================= */
+
+.progress-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.progress-page h1 {
+  font-size: 48px;
+  margin: 50px 0 10px;
+  color: var(--text);
+}
+
+.progress-page > p {
+  font-size: 18px;
+  color: var(--text-light);
+  margin-bottom: 40px;
+}
+
+.progress-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.progress-card {
+  background: white;
+  border: 1px solid #d1fae5;
+  border-radius: 20px;
+  padding: 30px 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.progress-card:hover {
+  transform: translateY(-5px);
+}
+
+.progress-card h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.progress-card p {
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.progress-card strong {
+  display: block;
+  font-size: 36px;
+  color: var(--green);
+}
+
+@media (max-width: 700px) {
+  .progress-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-page h1 {
+    font-size: 38px;
+  }
+}
+/* Result screen stats */
+.result-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0 25px;
+}
+
+.result-stats div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.result-stats strong {
+  font-size: 22px;
+  color: var(--green);
+}
+
+.result-stats span {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+/* Result screen buttons */
+.result-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
