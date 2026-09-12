@@ -439,3 +439,72 @@ body {
   gap: 12px;
   flex-wrap: wrap;
 }
+/* Pattern Recognition Game */
+
+.focus-game {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 45px 50px;
+  text-align: center;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.focus-game h2 {
+  font-size: 32px;
+  margin-bottom: 18px;
+}
+
+.focus-game p {
+  font-size: 22px;
+  margin-bottom: 18px;
+}
+
+.focus-game strong {
+  font-size: 22px;
+}
+
+.pattern-sequence {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin: 35px 0;
+  flex-wrap: wrap;
+}
+
+.pattern-sequence span {
+  font-size: 64px;
+  min-width: 80px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 16px;
+  padding: 10px;
+}
+
+.pattern-options {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.pattern-option {
+  width: 120px;
+  height: 120px;
+  font-size: 52px;
+  border: 3px solid #16a34a;
+  border-radius: 18px;
+  background: white;
+  cursor: pointer;
+}
+
+.pattern-option:hover {
+  background: #dcfce7;
+  transform: scale(1.05);
+}

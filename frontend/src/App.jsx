@@ -29,6 +29,38 @@ function App() {
   const [memoryGamesPlayed, setMemoryGamesPlayed] = useState(0)
   const [focusStarted, setFocusStarted] = useState(false)
   const [focusScore, setFocusScore] = useState(0)
+  const [patternQuestion, setPatternQuestion] = useState(0)
+const [patternScore, setPatternScore] = useState(0)
+const [patternAnswered, setPatternAnswered] = useState(false)
+const [patternComplete, setPatternComplete] = useState(false)
+const patternQuestions = [
+  {
+    sequence: ['🎋', '🌸', '🎋', '🌸', '❓'],
+    options: ['🎋', '🥟', '🐘'],
+    answer: '🎋'
+  },
+  {
+    sequence: ['🥟', '🍵', '🥟', '🍵', '❓'],
+    options: ['🌸', '🍵', '🥟'],
+    answer: '🥟'
+  },
+  {
+    sequence: ['🐘', '🦋', '🐘', '🦋', '❓'],
+    options: ['🥁', '🐘', '🌿'],
+    answer: '🐘'
+  },
+  {
+    sequence: ['🥁', '🎋', '🌸', '🥁', '🎋', '❓'],
+    options: ['🌸', '🥟', '🥁'],
+    answer: '🌸'
+  },
+  {
+    sequence: ['🍵', '🌿', '🥟', '🍵', '🌿', '❓'],
+    options: ['🍵', '🥟', '🌸'],
+    answer: '🥟'
+  }
+]
+
 
   function handleCardClick(card) {
     if (
@@ -178,8 +210,9 @@ function App() {
 
             <div className="game-card">
               <div className="game-icon">🎯</div>
-              <h2>Focus Challenge</h2>
-              <p>Challenge your attention and focus.</p>
+              <h2>Pattern Recognition</h2>
+              <p>Train your reasoning and
+pattern recognition.</p>
 
               <button
   className="primary-btn"
@@ -191,7 +224,7 @@ function App() {
 
             <div className="game-card">
               <div className="game-icon">⚡</div>
-              <h2>Quick Recall</h2>
+              <h2>Story Recall</h2>
               <p>Test how quickly you can remember.</p>
 
               <button className="primary-btn">
@@ -247,43 +280,115 @@ function App() {
             ← Back to Games
           </button>
 
-          <h1>Focus Challenge 🎯</h1>
+          <h1>Pattern Recognition 🧠</h1>
 
-          <p>
-            Test your attention and reaction speed.
-          </p>
+          <p>Train your reasoning, attention, and pattern recognition.</p>
 
           
             <div className="focus-game">
 
   {!focusStarted ? (
     <>
-      <h2>Ready to Focus?</h2>
+      <h2>Ready to Play?</h2>
 
       <p>
-        Click the target when it appears!
+       Find the pattern and choose what comes next!
       </p>
 
       <button
         className="primary-btn"
         onClick={() => setFocusStarted(true)}
       >
-        Start Challenge →
+        Start Game →
       </button>
     </>
   ) : (
     <>
-      <h2>Find the Target! 🎯</h2>
+  {patternComplete ? (
+    <>
+      <h2>🎉 Great Job!</h2>
 
-      <p>Click the target as quickly as you can.</p>
-<strong>Score: {focusScore} / 5</strong>
+      <p>You completed Pattern Recognition!</p>
+
+      <strong>
+        Your Score: {patternScore} / 5
+      </strong>
+
+      <br />
+      <br />
+
       <button
-  className="focus-target"
-  onClick={() => setFocusScore(focusScore + 1)}
->
-  🎯
-</button>
+        className="primary-btn"
+        onClick={() => {
+          setPatternQuestion(0)
+          setPatternScore(0)
+          setPatternComplete(false)
+          setFocusStarted(false)
+        }}
+      >
+        Play Again
+      </button>
+
+      <br />
+      <br />
+
+      <button
+        className="secondary-btn"
+        onClick={() => {
+          setPatternQuestion(0)
+          setPatternScore(0)
+          setPatternComplete(false)
+          setFocusStarted(false)
+          setPage('games')
+        }}
+      >
+        Back to Games
+      </button>
     </>
+  ) : (
+    <>
+      <h2>Pattern Recognition 🧠</h2>
+
+      <p>What comes next in the pattern?</p>
+
+      <strong>
+        Question {patternQuestion + 1} / {patternQuestions.length}
+      </strong>
+
+      <div className="pattern-sequence">
+        {patternQuestions[patternQuestion].sequence.map((item, index) => (
+          <span key={index}>{item}</span>
+        ))}
+      </div>
+<h3>Answer Options</h3>
+      <div className="pattern-options">
+        {patternQuestions[patternQuestion].options.map((option) => (
+          <button
+            key={option}
+            className="pattern-option"
+            onClick={() => {
+              if (patternComplete) return
+
+              if (option === patternQuestions[patternQuestion].answer) {
+                setPatternScore(prev => prev + 1)
+              }
+
+              if (patternQuestion < patternQuestions.length - 1) {
+                setPatternQuestion(prev => prev + 1)
+              } else {
+                setPatternComplete(true)
+              }
+            }}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+
+      <strong>Score: {patternScore} / 5</strong>
+    </>
+  )}
+</>
   )}
 
 </div>
