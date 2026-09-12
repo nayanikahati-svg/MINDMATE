@@ -26,7 +26,15 @@ function App() {
   const [cards, setCards] = useState(shuffleCards())
   const [selected, setSelected] = useState([])
   const [moves, setMoves] = useState(0)
-  const [memoryGamesPlayed, setMemoryGamesPlayed] = useState(0)
+ 
+  const [memoryResult, setMemoryResult] = useState(() => {
+  const saved = localStorage.getItem('mindmateMemoryResult')
+  return saved ? JSON.parse(saved) : null
+})
+const [memoryHistory, setMemoryHistory] = useState(() => {
+  const saved = localStorage.getItem('mindmateMemoryHistory')
+  return saved ? JSON.parse(saved) : []
+})
   const [focusStarted, setFocusStarted] = useState(false)
   const [focusScore, setFocusScore] = useState(0)
 
@@ -95,14 +103,62 @@ function App() {
     setPage('games')
   }
 
-  const matchedCount = cards.filter(card => card.matched).length
-  const gameComplete = matchedCount === cards.length
-  useEffect(() => {
-  if (gameComplete) {
-    setMemoryGamesPlayed(previous => previous + 1)
-  }
-}, [gameComplete])
+ const matchedCount = cards.filter(card => card.matched).length
+const gameComplete = matchedCount === cards.length
 
+useEffect(() => {
+  if (gameComplete && moves > 0) {
+    const gameResult = {
+      name: 'Memory Match',
+      moves: moves,
+      score: Math.max(0, 120 - (moves - 12) * 5),
+      accuracy: Math.max(0, Math.min(100, Math.round((12 / moves) * 100))),
+      date: new Date().toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      })
+    }
+    setMemoryResult(gameResult)
+localStorage.setItem('mindmateMemoryResult', JSON.stringify(gameResult))
+
+setMemoryHistory(previous => {
+  const updated = [...previous, gameResult]
+  localStorage.setItem('mindmateMemoryHistory', JSON.stringify(updated))
+  return updated
+})
+
+
+  }
+}, [gameComplete, moves])
+  const sessionsPlayed = memoryHistory.length
+
+  const totalPoints = memoryHistory.reduce(
+    (total, game) => total + game.score,
+    0
+  )
+
+  const averageAccuracy =
+    sessionsPlayed > 0
+      ? Math.round(
+          memoryHistory.reduce(
+            (total, game) => total + game.accuracy,
+            0
+          ) / sessionsPlayed
+        )
+      : 0
+
+  const bestAccuracy =
+    sessionsPlayed > 0
+      ? Math.max(...memoryHistory.map(game => game.accuracy))
+      : 0
+
+  const bestMoves =
+    sessionsPlayed > 0
+      ? Math.min(...memoryHistory.map(game => game.moves))
+      : 0
+
+  const recentAttempts = [...memoryHistory].reverse()
   return (
     <div className="mindmate">
 
@@ -219,23 +275,198 @@ function App() {
     <div className="progress-cards">
 
       <div className="progress-card">
-        <h2>🧠 Memory Match</h2>
-        <p>Games Played</p>
-        <strong>{memoryGamesPlayed}</strong>
+        <h2>🎮 Games Played</h2>
+        <strong>{sessionsPlayed}</strong>
       </div>
 
       <div className="progress-card">
-        <h2>🎯 Focus</h2>
-        <p>Games Played</p>
-        <strong>0</strong>
+        <h2>🎯 Average Accuracy</h2>
+        <strong>
+          {averageAccuracy}%
+        </strong>
       </div>
 
       <div className="progress-card">
-        <h2>⚡ Quick Recall</h2>
-        <p>Games Played</p>
-        <strong>0</strong>
+        <h2>⭐ Total Points</h2>
+        <strong>
+          {totalPoints}
+          
+        </strong>
       </div>
 
+      <div className="progress-card">
+        <h2>🏆 Best Accuracy</h2>
+        <strong>
+          {bestAccuracy}%
+          
+        </strong>
+      </div>
+
+    </div>
+
+    <section className="section-card">
+      <div className="section-heading">
+        <div>
+          <h2>Game-wise Performance</h2>
+          <p>See how you are performing in each activity</p>
+        </div>
+      </div>
+
+      <div className="games-list">
+        <div className="game-row">
+
+          <div className="game-info">
+            <div className="game-icon">🧠</div>
+
+            <div>
+              <h3>Memory Match</h3>
+              <p>Your completed Memory Match games</p>
+              <p>
+  Best: {bestMoves > 0 ? `${bestMoves} moves` : '—'}
+</p>
+            </div>
+          </div>
+
+          <div className="accuracy-section">
+            <div className="accuracy-top">
+              <span>Latest Accuracy</span>
+              <strong>
+                {memoryResult ? `${memoryResult.accuracy}%` : '0%'}
+              </strong>
+            </div>
+
+            <div className="progress-bar">
+              <div
+                className="progress-fill"
+                style={{
+                  width: memoryResult ? `${memoryResult.accuracy}%` : '0%'
+                }}
+              ></div>
+            </div>
+          </div>
+
+          <div className="score">
+            <span>Latest Score</span>
+            <strong>
+              {memoryResult ? memoryResult.score : '0'}
+            </strong>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section className="section-card">
+
+      <div className="section-heading">
+        <div>
+          <h2>Progress Insights</h2>
+          <p>A simple summary of your recent game performance</p>
+        </div>
+      </div>
+
+      <div className="insights-grid">
+
+  <div className="insight-card">
+    <span className="insight-icon">🏆</span>
+    <div>
+      <h3>Best Performance</h3>
+      <p>
+        {sessionsPlayed > 0
+          ? `Your best Memory Match performance was ${bestMoves} moves with ${bestAccuracy}% accuracy.`
+          : 'Complete a game to start tracking your performance.'}
+      </p>
+    </div>
+  </div>
+
+  <div className="insight-card">
+    <span className="insight-icon">📈</span>
+    <div>
+      <h3>Average Accuracy</h3>
+      <p>
+        {sessionsPlayed > 0
+          ? `Your average accuracy across ${sessionsPlayed} game${sessionsPlayed > 1 ? 's' : ''} is ${averageAccuracy}%.`
+          : 'Your average accuracy will appear after you complete a game.'}
+      </p>
+    </div>
+  </div>
+
+  <div className="insight-card">
+    <span className="insight-icon">🎯</span>
+    <div>
+      <h3>Recent Activity</h3>
+      <p>
+        {sessionsPlayed > 0
+          ? `You have completed ${sessionsPlayed} Memory Match game${sessionsPlayed > 1 ? 's' : ''} and earned ${totalPoints} total points.`
+          : 'Your recent activity will appear after you complete a game.'}
+      </p>
+    </div>
+  </div>
+
+</div>
+
+    </section>
+
+    <section className="section-card">
+
+      <div className="section-heading">
+        <div>
+          <h2>Recent Activity</h2>
+          <p>Your latest cognitive game sessions</p>
+        </div>
+      </div>
+
+      <div className="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Game</th>
+<th>Games Played</th>
+<th>Score</th>
+<th>Accuracy</th>
+<th>Moves</th>
+            </tr>
+          </thead>
+
+          <tbody>
+  {recentAttempts.length > 0 ? (
+  recentAttempts.map((game, index) => (
+    <tr key={`${game.date}-${index}`}>
+      <td>{game.name}</td>
+      <td>{index + 1}</td>
+      <td>{game.score}</td>
+      <td>
+        <span className="accuracy-badge">
+          {game.accuracy}%
+        </span>
+      </td>
+      <td>{game.moves ?? '—'}</td>
+    </tr>
+  ))
+) : (
+    <tr>
+  <td>Memory Match</td>
+  <td>0</td>
+  <td>0</td>
+  <td>
+    <span className="accuracy-badge">0%</span>
+  </td>
+  <td>—</td>
+</tr>
+  )}
+</tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <div className="report-note">
+      <span>💡</span>
+      <p>
+        This report shows your performance in cognitive activities over
+        time. It is intended to track activity and progress, not to
+        provide a medical diagnosis.
+      </p>
     </div>
 
   </main>
