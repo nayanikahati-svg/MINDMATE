@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Caregiver Dashboard</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: #2c3e50;
+            color: white;
+            padding: 25px 15px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            padding: 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar li:hover,
+        .sidebar li.active {
+            background: #34495e;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 240px;
+            padding: 30px;
+            width: calc(100% - 240px);
+        }
+
+        .page-title {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        /* SECTIONS */
+
+        .section {
+            display: none;
+        }
+
+        .section.active-section {
+            display: block;
+        }
+
+        /* DASHBOARD GRID */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* CARD */
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* PROFILE */
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #5dade2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 42px;
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        /* BUTTON */
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 8px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .success-message {
+            color: green;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        /* REMINDER */
+
+        .reminder-item {
+            padding: 12px;
+            background: #f7f9fc;
+            border-left: 4px solid #3498db;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                width: 70px;
+                padding: 15px 8px;
+            }
+
+            .sidebar h2 {
+                font-size: 0;
+            }
+
+            .sidebar li {
+                font-size: 0;
+                text-align: center;
+            }
+
+            .sidebar li::first-letter {
+                font-size: 20px;
+            }
+
+            .main {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <h2>👩‍⚕️ Caregiver</h2>
+
+    <ul>
+
+        <li class="active" onclick="showSection('dashboard', this)">
+            🏠 Dashboard
+        </li>
+
+        <li onclick="showSection('profile', this)">
+            👤 Patient Profile
+        </li>
+
+        <li onclick="showSection('preferences', this)">
+            ❤️ Preferences
+        </li>
+
+        <li onclick="showSection('language', this)">
+            🗣️ Language Preference
+        </li>
+
+        <li onclick="showSection('routine', this)">
+            📅 Daily Routine
+        </li>
+
+        <li onclick="showSection('notes', this)">
+            📝 Notes
+        </li>
+
+        <li onclick="showSection('reminders', this)">
+            🔔 Reminders
+        </li>
+
+    </ul>
+
+</div>
+
+
+<!-- MAIN CONTENT -->
+
+<div class="main">
+
+
+<!-- DASHBOARD SECTION -->
+
+<div id="dashboard" class="section active-section">
+
+    <h1 class="page-title">Caregiver Dashboard</h1>
+
+    <p class="subtitle">
+        Patient Information & Care Overview
+    </p>
+
+    <div class="dashboard-grid">
+
+        <div class="card">
+            <h2>👤 Patient</h2>
+            <p><span class="label">Name:</span> Sunita Sharma</p>
+            <p><span class="label">Age:</span> 72</p>
+            <p><span class="label">Patient ID:</span> DEM-101</p>
+        </div>
+
+        <div class="card">
+            <h2>❤️ Favourite Activity</h2>
+            <p>🌱 Gardening</p>
+            <p>🎵 Listening to music</p>
+        </div>
+
+        <div class="card">
+            <h2>🗣️ Preferred Language</h2>
+            <p>Bengali</p>
+            <p>Speak slowly and clearly</p>
+        </div>
+
+        <div class="card">
+            <h2>📅 Today's Routine</h2>
+            <p>🌅 7:00 AM - Wake Up</p>
+            <p>🎮 11:00 AM - Memory Game</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- PROFILE SECTION -->
+
+<div id="profile" class="section">
+
+    <h1 class="page-title">Patient Profile</h1>
+
+    <div class="card">
+
+        <div class="profile">
+
+            <div class="profile-photo">
+                👵
+            </div>
+
+            <div>
+                <h2>Sunita Sharma</h2>
+                <p>Patient ID: DEM-101</p>
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="form-group">
+
+            <label>Patient Name</label>
+
+            <input
+                type="text"
+                id="patientName"
+                value="Sunita Sharma"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Age</label>
+
+            <input
+                type="number"
+                id="patientAge"
+                value="72"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Gender</label>
+
+            <select id="patientGender">
+
+                <option>Female</option>
+                <option>Male</option>
+                <option>Other</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Address</label>
+
+            <textarea id="patientAddress">Kolkata, West Bengal</textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Patient ID</label>
+
+            <input
+                type="text"
+                value="DEM-101"
+            >
+
+        </div>
+
+
+        <button onclick="saveProfile()">
+            Save Profile
+        </button>
+
+        <p id="profileMessage" class="success-message"></p>
+
+    </div>
+
+</div>
+
+
+<!-- PREFERENCES SECTION -->
+
+<div id="preferences" class="section">
+
+    <h1 class="page-title">Preferences & Hobbies</h1>
+
+    <div class="card">
+
+        <div class="form-group">
+
+            <label>Hobbies</label>
+
+            <textarea id="hobbies">
+Gardening, Reading Books, Listening to Music, Knitting
+            </textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Favourite Food</label>
+
+            <input
+                type="text"
+                id="food"
+                value="Khichuri"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Favourite Music</label>
+
+            <input
+                type="text"
+                id="music"
+                value="Old Bengali Songs"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Favourite Activity</label>
+
+            <input
+                type="text"
+                id="activity"
+                value="Walking in the Garden"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Likes</label>
+
+            <textarea>
+Spending time with family, gardening, peaceful music
+            </textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Dislikes</label>
+
+            <textarea>
+Loud noises, crowded places
+            </textarea>
+
+        </div>
+
+
+        <button onclick="savePreferences()">
+            Save Preferences
+        </button>
+
+        <p id="preferencesMessage" class="success-message"></p>
+
+    </div>
+
+</div>
+
+
+<!-- LANGUAGE SECTION -->
+
+<div id="language" class="section">
+
+    <h1 class="page-title">Language Preference</h1>
+
+    <div class="card">
+
+        <div class="form-group">
+
+            <label>Preferred Language</label>
+
+            <select id="preferredLanguage">
+
+                <option>Bengali</option>
+                <option>Hindi</option>
+                <option>English</option>
+                <option>Other</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Languages Understood</label>
+
+            <input
+                type="text"
+                value="Bengali, Hindi, English"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Communication Preference</label>
+
+            <select>
+
+                <option>Speak Slowly</option>
+                <option>Speak Clearly</option>
+                <option>Use Simple Words</option>
+                <option>Use Short Sentences</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Favourite Songs Language</label>
+
+            <input
+                type="text"
+                value="Bengali"
+            >
+
+        </div>
+
+
+        <button onclick="saveLanguage()">
+            Save Language Preference
+        </button>
+
+        <p id="languageMessage" class="success-message"></p>
+
+    </div>
+
+</div>
+
+
+<!-- DAILY ROUTINE SECTION -->
+
+<div id="routine" class="section">
+
+    <h1 class="page-title">Daily Routine</h1>
+
+    <div class="card">
+
+        <div class="form-group">
+
+            <label>Morning Routine</label>
+
+            <textarea>
+7:00 AM - Wake Up
+8:00 AM - Breakfast
+9:00 AM - Medication
+            </textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Afternoon Routine</label>
+
+            <textarea>
+11:00 AM - Memory Game
+1:00 PM - Lunch
+2:00 PM - Rest
+            </textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Evening Routine</label>
+
+            <textarea>
+5:00 PM - Evening Walk
+7:00 PM - Dinner
+8:00 PM - Medication
+            </textarea>
+
+        </div>
+
+
+        <button onclick="saveRoutine()">
+            Save Daily Routine
+        </button>
+
+        <p id="routineMessage" class="success-message"></p>
+
+    </div>
+
+</div>
+
+
+<!-- NOTES SECTION -->
+
+<div id="notes" class="section">
+
+    <h1 class="page-title">Caregiver Notes</h1>
+
+    <div class="card">
+
+        <div class="form-group">
+
+            <label>Write Notes</label>
+
+            <textarea
+                id="caregiverNotes"
+                placeholder="Write important observations about the patient..."
+            ></textarea>
+
+        </div>
+
+
+        <button onclick="saveNotes()">
+            Save Notes
+        </button>
+
+
+        <p id="notesMessage" class="success-message"></p>
+
+    </div>
+
+</div>
+
+
+<!-- REMINDERS SECTION -->
+
+<div id="reminders" class="section">
+
+    <h1 class="page-title">Important Reminders</h1>
+
+
+    <div class="card">
+
+        <div id="reminderList">
+
+            <div class="reminder-item">
+                💊 Medication - 9:00 AM
+            </div>
+
+            <div class="reminder-item">
+                💊 Medication - 8:00 PM
+            </div>
+
+            <div class="reminder-item">
+                👨‍⚕️ Doctor Appointment - Monday
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Add New Reminder</label>
+
+            <input
+                type="text"
+                id="newReminder"
+                placeholder="Example: Medication - 2:00 PM"
+            >
+
+        </div>
+
+
+        <button onclick="addReminder()">
+            Add Reminder
+        </button>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+
+/* SHOW INDIVIDUAL SECTION */
+
+function showSection(sectionId, element) {
+
+    let sections =
+    document.querySelectorAll(".section");
+
+
+    sections.forEach(function(section) {
+
+        section.classList.remove(
+            "active-section"
+        );
+
+    });
+
+
+    document.getElementById(sectionId)
+    .classList.add("active-section");
+
+
+    let menuItems =
+    document.querySelectorAll(".sidebar li");
+
+
+    menuItems.forEach(function(item) {
+
+        item.classList.remove("active");
+
+    });
+
+
+    element.classList.add("active");
+
+}
+
+
+/* SAVE PROFILE */
+
+function saveProfile() {
+
+    document.getElementById(
+        "profileMessage"
+    ).innerHTML =
+    "✓ Patient profile saved successfully!";
+
+}
+
+
+/* SAVE PREFERENCES */
+
+function savePreferences() {
+
+    document.getElementById(
+        "preferencesMessage"
+    ).innerHTML =
+    "✓ Preferences saved successfully!";
+
+}
+
+
+/* SAVE LANGUAGE */
+
+function saveLanguage() {
+
+    document.getElementById(
+        "languageMessage"
+    ).innerHTML =
+    "✓ Language preference saved successfully!";
+
+}
+
+
+/* SAVE ROUTINE */
+
+function saveRoutine() {
+
+    document.getElementById(
+        "routineMessage"
+    ).innerHTML =
+    "✓ Daily routine saved successfully!";
+
+}
+
+
+/* SAVE NOTES */
+
+function saveNotes() {
+
+    let notes =
+    document.getElementById(
+        "caregiverNotes"
+    ).value;
+
+
+    if (notes === "") {
+
+        alert(
+            "Please write a note first!"
+        );
+
+    }
+
+    else {
+
+        document.getElementById(
+            "notesMessage"
+        ).innerHTML =
+        "✓ Notes saved successfully!";
+
+    }
+
+}
+
+
+/* ADD REMINDER */
+
+function addReminder() {
+
+    let reminder =
+    document.getElementById(
+        "newReminder"
+    ).value;
+
+
+    if (reminder === "") {
+
+        alert(
+            "Please enter a reminder!"
+        );
+
+        return;
+
+    }
+
+
+    let reminderList =
+    document.getElementById(
+        "reminderList"
+    );
+
+
+    let newItem =
+    document.createElement("div");
+
+
+    newItem.className =
+    "reminder-item";
+
+
+    newItem.innerHTML =
+    "🔔 " + reminder;
+
+
+    reminderList.appendChild(
+        newItem
+    );
+
+
+    document.getElementById(
+        "newReminder"
+    ).value = "";
+
+}
+
+
+</script>
+
+</body>
+</html>
