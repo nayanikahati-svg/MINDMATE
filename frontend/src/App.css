@@ -508,3 +508,367 @@ body {
   background: #dcfce7;
   transform: scale(1.05);
 }
+.progress-chart {
+  margin-top: 20px;
+}
+
+.chart-item {
+  margin-bottom: 18px;
+}
+
+.chart-label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.chart-bar-container {
+  width: 100%;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.chart-bar {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #4caf50;
+  color: white;
+  font-weight: 600;
+  box-sizing: border-box;
+  min-width: 45px;
+}
+
+.chart-item small {
+  display: block;
+  margin-top: 5px;
+  color: #666;
+}
+
+/* =========================
+   NEW PROGRESS DASHBOARD
+   ========================= */
+
+.progress-section {
+  margin-top: 45px;
+}
+
+.section-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+/* Memory Match summary */
+
+.memory-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid #d1fae5;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.summary-item {
+  padding: 18px;
+  background: #f8fafc;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.summary-item span {
+  display: block;
+  color: var(--text-light);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.summary-item strong {
+  display: block;
+  font-size: 28px;
+  color: var(--green);
+}
+
+/* Recent attempts + chart */
+
+.progress-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 25px;
+}
+
+.progress-details .progress-card {
+  text-align: left;
+}
+
+.attempt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attempt-item {
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border-left: 4px solid var(--green);
+}
+
+.attempt-item > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.attempt-item small {
+  color: var(--text-light);
+}
+
+.attempt-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attempt-stats span {
+  font-size: 13px;
+  color: var(--text-light);
+  background: white;
+  padding: 5px 8px;
+  border-radius: 8px;
+}
+
+/* Progress chart */
+
+.progress-chart {
+  margin-top: 10px;
+}
+
+.chart-item {
+  margin-bottom: 18px;
+}
+
+.chart-label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.chart-bar-container {
+  width: 100%;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.chart-bar {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--green);
+  color: white;
+  font-weight: 600;
+  box-sizing: border-box;
+  min-width: 45px;
+}
+
+.chart-item small {
+  display: block;
+  margin-top: 5px;
+  color: var(--text-light);
+}
+
+/* Other game summaries */
+
+.game-progress-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid #d1fae5;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.game-progress-card div {
+  padding: 18px;
+  background: #f8fafc;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.game-progress-card span {
+  display: block;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.game-progress-card strong {
+  font-size: 28px;
+  color: var(--green);
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+  .memory-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-details {
+    grid-template-columns: 1fr;
+  }
+
+  .game-progress-card {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* Pattern Recognition attempt layout */
+
+.progress-section .attempt-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-section .attempt-item > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.progress-section .attempt-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.progress-section .attempt-stats span {
+  white-space: nowrap;
+}
+
+/* Pattern Recognition attempt heading */
+
+.attempt-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.attempt-heading strong {
+  display: block;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.attempt-heading small {
+  color: var(--text-light);
+  font-size: 13px;
+}
+/* Fix Recent Attempts layout */
+
+.progress-details .progress-card {
+  width: 100%;
+  text-align: left;
+}
+
+.progress-details .progress-card h2 {
+  margin-bottom: 20px;
+}
+
+.progress-details .attempt-item {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border-left: 4px solid var(--green);
+}
+
+.progress-details .attempt-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.progress-details .attempt-heading strong {
+  font-size: 16px;
+  color: var(--text);
+}
+
+.progress-details .attempt-heading small {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.progress-details .attempt-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.progress-details .attempt-stats span {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--text-light);
+  background: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+/* Pattern Recognition - match Memory Match attempt text */
+
+.progress-details .attempt-heading strong {
+  font-size: 22px;
+ color:var(--green);
+}
+
+.progress-details .attempt-heading small {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.progress-details .attempt-stats span {
+  font-size: 16px;
+  padding: 7px 10px;
+}
+.story-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.story-option {
+  width: 100%;
+  padding: 14px 18px;
+  background: #f3f4f6;
+  color: #222;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.story-option:hover {
+  background: #e5e7eb;
+}
+.progress-details .attempt-item > div:first-child strong,
+.progress-details .attempt-heading strong {
+  font-size:22px;
+  color:var(--green);
+}
