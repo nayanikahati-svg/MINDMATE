@@ -33,6 +33,33 @@ function App() {
 const [patternScore, setPatternScore] = useState(0)
 const [patternAnswered, setPatternAnswered] = useState(false)
 const [patternComplete, setPatternComplete] = useState(false)
+const [storyRecallStarted, setStoryRecallStarted] = useState(false)
+const [storyRecallQuestion, setStoryRecallQuestion] = useState(-1)
+const [storyRecallComplete, setStoryRecallComplete] = useState(false)
+const [storyRecallScore, setStoryRecallScore] = useState(0)
+const [storyRecallHasPlayed, setStoryRecallHasPlayed] = useState(false)
+const [storyRecallReplayUsed, setStoryRecallReplayUsed] = useState(false)
+const [storyRecallIsPlaying, setStoryRecallIsPlaying] = useState(false)
+const [storyRecallShowAnswers, setStoryRecallShowAnswers] = useState(false)
+const speakText = (text, onFinished) => {
+  window.speechSynthesis.cancel()
+
+  const speech = new SpeechSynthesisUtterance(text)
+  speech.lang = 'en-IN'
+  speech.rate = 0.85
+  speech.pitch = 1
+
+  speech.onend = () => {
+    setStoryRecallIsPlaying(false)
+
+    if (onFinished) {
+      onFinished()
+    }
+  }
+
+  setStoryRecallIsPlaying(true)
+  window.speechSynthesis.speak(speech)
+}
 const patternQuestions = [
   {
     sequence: ['🎋', '🌸', '🎋', '🌸', '❓'],
@@ -58,6 +85,24 @@ const patternQuestions = [
     sequence: ['🍵', '🌿', '🥟', '🍵', '🌿', '❓'],
     options: ['🍵', '🥟', '🌸'],
     answer: '🥟'
+  }
+]  
+const storyRecallStories = [
+  {
+    story:
+      "Meitei went to the garden this morning. She picked three Memang Narang. Then she watered the flowers before going inside for tea.",
+    questions: [
+      {
+        question: "What did Meitei pick?",
+        options: ["Memang Narang", "Kaji Nemu", "Tezpur Litchi"],
+        answer: "Memang Narang"
+      },
+      {
+        question: "How many Memang Narang did Meitei pick?",
+        options: ["Two", "Three", "Five"],
+        answer: "Three"
+      }
+    ]
   }
 ]
 
@@ -227,9 +272,12 @@ pattern recognition.</p>
               <h2>Story Recall</h2>
               <p>Test how quickly you can remember.</p>
 
-              <button className="primary-btn">
-                Coming Soon
-              </button>
+              <button
+  className="primary-btn"
+  onClick={() => setPage('story')}
+>
+  Play Game →
+</button>
             </div>
 
           </div>
@@ -395,6 +443,226 @@ pattern recognition.</p>
 
         </main>
       )}
+      {page === 'story' && (
+  <main className="focus-page">
+
+    <button className="back-btn" onClick={goToGames}>
+      ← Back to Games
+    </button>
+
+    <h1>Story Recall 📖</h1>
+
+    <p>
+      Listen to a short story and remember the important details.
+    </p>
+
+    <div className="story-game">
+
+      {!storyRecallStarted ? (
+  <>
+    <h2>Ready to Play?</h2>
+
+    <p>
+      Listen carefully to the story, then answer a few simple questions.
+    </p>
+
+    <button
+      className="primary-btn"
+      onClick={() => {
+  setStoryRecallStarted(true)
+  setStoryRecallQuestion(-1)
+  setStoryRecallScore(0)
+  setStoryRecallComplete(false)
+  setStoryRecallReplayUsed(false)
+  
+}}
+    >
+      Start Game →
+    </button>
+  </>
+) : storyRecallQuestion === -1 ? (
+  <>
+    <h2>Listen to the Story 🎧</h2>
+
+    <p>
+      Tap the speaker to hear the story. You can listen again anytime.
+    </p>
+
+    <button
+  className="story-speaker"
+  disabled={storyRecallReplayUsed}
+  onClick={() => {
+  if (!storyRecallHasPlayed) {
+    speakText(storyRecallStories[0].story, () => {
+      setStoryRecallHasPlayed(true)
+    })
+  } else if (!storyRecallReplayUsed) {
+  speakText(storyRecallStories[0].story, () => {
+    setStoryRecallReplayUsed(true)
+  })
+}
+}}
+>
+  <span className="speaker-icon">🔊</span>
+  <span>
+    {storyRecallHasPlayed ? 'Listen Again' : 'Hear the Story'}
+  </span>
+</button>
+
+    <br />
+    <br />
+
+    <button
+      className="secondary-btn"
+      onClick={() => {
+  window.speechSynthesis.cancel()
+  setStoryRecallQuestion(0)
+}}
+    >
+      Ask Questions →
+    </button>
+  </>
+) : storyRecallComplete ? (
+  <>
+    <h2>
+  {storyRecallScore === 2
+    ? '🌟 Excellent!'
+    : storyRecallScore === 1
+    ? '👍 Good Effort!'
+    : '🌱 Nice Try!'}
+</h2>
+
+    <p>
+  {storyRecallScore === 2
+    ? 'You remembered all the important details!'
+    : storyRecallScore === 1
+    ? 'You remembered some of the important details.'
+    : 'That was a tricky one. Keep practicing!'}
+</p>
+
+    <strong>
+      You answered {storyRecallScore} out of 2 questions correctly.
+    </strong>
+    <br />
+<br />
+
+<button
+  className="secondary-btn"
+  onClick={() => setStoryRecallShowAnswers(true)}
+>
+  📖 View Answers
+</button>
+{storyRecallShowAnswers && (
+  <div className="story-answers">
+    <h3>Answers</h3>
+
+    {storyRecallStories[0].questions.map((item, index) => (
+      <div className="story-answer-card" key={index}>
+        <p>
+          <strong>Question {index + 1}</strong>
+        </p>
+
+        <p>{item.question}</p>
+
+        <p>✓ Correct answer: {item.answer}</p>
+      </div>
+    ))}
+  </div>
+)}
+
+    <br />
+    <br />
+
+    <button
+      className="primary-btn"
+      onClick={() => {
+        setStoryRecallStarted(false)
+        setStoryRecallQuestion(-1)
+        setStoryRecallScore(0)
+        setStoryRecallComplete(false)
+      }}
+    >
+      Play Again
+    </button>
+
+    <br />
+    <br />
+
+    <button
+      className="secondary-btn"
+      onClick={() => {
+        setStoryRecallStarted(false)
+        setStoryRecallQuestion(-1)
+        setStoryRecallScore(0)
+        setStoryRecallComplete(false)
+        setPage('games')
+      }}
+    >
+      Back to Games
+    </button>
+  </>
+) : storyRecallQuestion === -1 ? (
+  <>
+    <h2>📖 Listen to the Story</h2>
+
+    <p>
+      Listen carefully. Try to remember the important details.
+    </p>
+
+    <div className="story-box">
+      <p>{storyRecallStories[0].story}</p>
+    </div>
+
+    <button
+      className="primary-btn"
+      onClick={() => setStoryRecallQuestion(0)}
+    >
+      Continue to Questions →
+    </button>
+  </>
+) : (
+  <>
+    <h2>Question {storyRecallQuestion + 1}</h2>
+
+    <h3>
+      {storyRecallStories[0].questions[storyRecallQuestion].question}
+    </h3>
+
+    <div className="story-options">
+      {storyRecallStories[0].questions[storyRecallQuestion].options.map(
+        (option) => (
+          <button
+            key={option}
+            className="story-option"
+            onClick={() => {
+              const currentQuestion =
+                storyRecallStories[0].questions[storyRecallQuestion]
+
+              if (option === currentQuestion.answer) {
+                setStoryRecallScore(prev => prev + 1)
+              }
+
+              if (storyRecallQuestion < 1) {
+                setStoryRecallQuestion(prev => prev + 1)
+              } else {
+                setStoryRecallComplete(true)
+              }
+            }}
+          >
+            {option}
+          </button>
+        )
+      )}
+    </div>
+
+    <p>
+      Question {storyRecallQuestion + 1} / 2
+    </p>
+  </>
+)}
+</div>
+</main>
+)}
       {page === 'memory' && (
         <main className="memory-page">
 
