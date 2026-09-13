@@ -439,3 +439,33 @@ body {
   gap: 12px;
   flex-wrap: wrap;
 }
+/* Recent Activity table */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+.table-wrapper th {
+  font-weight: 700;
+}
+
+.table-wrapper td {
+  font-weight: 400;
+}
+
+.accuracy-badge {
+  font-weight: 600;
+}
