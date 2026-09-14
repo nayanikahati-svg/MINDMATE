@@ -58,11 +58,14 @@ const validMemoryHistory = memoryHistory.filter(
     typeof attempt.score === "number" &&
     typeof attempt.accuracy === "number" &&
     typeof attempt.date === "string"
+    
 )
+
   const [focusStarted, setFocusStarted] = useState(false)
   const [focusScore, setFocusScore] = useState(0)
   const [patternQuestion, setPatternQuestion] = useState(0)
 const [patternScore, setPatternScore] = useState(0)
+const [patternAnswered, setPatternAnswered] = useState(false)
 const [patternStartTime, setPatternStartTime] = useState(null)
 const [storyRecallStarted, setStoryRecallStarted] = useState(false)
 const [storyRecallQuestion, setStoryRecallQuestion] = useState(-1)
@@ -83,9 +86,26 @@ const [storyRecallShowAnswers, setStoryRecallShowAnswers] = useState(false)
 })
  const [patternHistory, setPatternHistory] = useState(() => {
   const saved = localStorage.getItem('mindmatePatternHistory')
-  return saved ? JSON.parse(saved) : []
+
+  if (!saved) return []
+
+  try {
+    const parsed = JSON.parse(saved)
+
+    return parsed.filter(
+      attempt =>
+        attempt &&
+        typeof attempt === 'object' &&
+        typeof attempt.score === 'number' &&
+        typeof attempt.accuracy === 'number' &&
+        typeof attempt.points === 'number' &&
+        typeof attempt.time === 'number' &&
+        typeof attempt.date === 'string'
+    )
+  } catch {
+    return []
+  }
 })
-const [patternAnswered, setPatternAnswered] = useState(false)
 const [patternComplete, setPatternComplete] = useState(false)
 const patternQuestions = [
   {
@@ -675,7 +695,7 @@ pattern recognition.</p>
   {/* Games Played */}
   <div className="summary-item">
   <span>Games Played</span>
-  <strong>{patternGamesPlayed}</strong>
+  <strong>{patternHistory.length}</strong>
 </div>
 <div className="summary-item">
   <span>Total Points</span>
