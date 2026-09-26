@@ -1,17 +1,26 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import { getNextDifficulty } from './adaptiveDifficulty'
 
 const cardsData = [
-  '🧠', '🧠',
-  '🌟', '🌟',
-  '🍀', '🍀',
-  '🚀', '🚀',
-  '🎯', '🎯',
-  '🦋', '🦋'
+  '🎋', '🎋',
+  '🌸', '🌸',
+  '🐘', '🐘',
+  '🦋', '🦋',
+  '🍵', '🍵',
+  '🌿', '🌿',
+  '🥟', '🥟',
+  '🍚', '🍚',
+  '🌾', '🌾',
+  '🐦', '🐦',
+  '🏞️', '🏞️',
+  '🥁', '🥁'
 ]
 
-function shuffleCards() {
-  return [...cardsData]
+function shuffleCards(pairCount = 12) {
+  const selectedCards = cardsData.slice(0, pairCount * 2)
+
+  return [...selectedCards]
     .sort(() => Math.random() - 0.5)
     .map((emoji, index) => ({
       id: index,
@@ -23,16 +32,18 @@ function shuffleCards() {
 
 function App() {
   const [page, setPage] = useState('home')
+  const [memoryDifficulty, setMemoryDifficulty] = useState('easy')
   const [cards, setCards] = useState(shuffleCards())
   const [selected, setSelected] = useState([])
   const [moves, setMoves] = useState(0)
   const [memoryGamesPlayed, setMemoryGamesPlayed] = useState(0)
   const [focusStarted, setFocusStarted] = useState(false)
-  const [focusScore, setFocusScore] = useState(0)
-  const [patternQuestion, setPatternQuestion] = useState(0)
+const [focusScore, setFocusScore] = useState(0)
+const [patternQuestion, setPatternQuestion] = useState(0)
 const [patternScore, setPatternScore] = useState(0)
 const [patternAnswered, setPatternAnswered] = useState(false)
 const [patternComplete, setPatternComplete] = useState(false)
+const [patternDifficulty, setPatternDifficulty] = useState('easy')
 const [storyRecallStarted, setStoryRecallStarted] = useState(false)
 const [storyRecallQuestion, setStoryRecallQuestion] = useState(-1)
 const [storyRecallComplete, setStoryRecallComplete] = useState(false)
@@ -60,33 +71,128 @@ const speakText = (text, onFinished) => {
   setStoryRecallIsPlaying(true)
   window.speechSynthesis.speak(speech)
 }
-const patternQuestions = [
+   const patternQuestions = [
+  // 🟢 EASY — Simple Recognition
+
   {
-    sequence: ['🎋', '🌸', '🎋', '🌸', '❓'],
-    options: ['🎋', '🥟', '🐘'],
-    answer: '🎋'
+    level: 'Easy',
+    prompt: 'Complete the pattern:',
+    sequence: ['🪙', '→', '🪙 🪙', '→', '🪙 🪙 🪙', '→', '?'],
+    options: ['🪙 🪙 🪙 🪙', '🪙 🪙', '🪙 🪙 🪙 🪙 🪙'],
+    answer: '🪙 🪙 🪙 🪙'
   },
+
   {
-    sequence: ['🥟', '🍵', '🥟', '🍵', '❓'],
-    options: ['🌸', '🍵', '🥟'],
-    answer: '🥟'
+    level: 'Easy',
+    prompt: 'Four bamboo baskets have the same weave pattern. One basket is different. Tap the different basket.',
+    sequence: ['🧺', '🧺', '🧺', '🧺', '🧺'],
+    options: ['🧺 1', '🧺 2', '🧺 3', '🧺 4', '🧺 5'],
+    answer: '🧺 3'
   },
+
   {
-    sequence: ['🐘', '🦋', '🐘', '🦋', '❓'],
-    options: ['🥁', '🐘', '🌿'],
-    answer: '🐘'
+    level: 'Easy',
+    prompt: 'What comes next in the size pattern?',
+    sequence: ['Small teacup', '→', 'Medium teacup', '→', 'Large teacup', '→', '?'],
+    options: ['Extra-large teacup', 'Small kettle', 'Large plate'],
+    answer: 'Extra-large teacup'
   },
+
+  // 🟡 MEDIUM — Combine Information
+
   {
-    sequence: ['🥁', '🎋', '🌸', '🥁', '🎋', '❓'],
-    options: ['🌸', '🥟', '🥁'],
-    answer: '🌸'
+    level: 'Medium',
+    prompt: 'Complete the pattern using both size and shade:',
+    sequence: [
+      'Small, light basket',
+      '→',
+      'Medium, darker basket',
+      '→',
+      'Large, darkest basket',
+      '→',
+      '?'
+    ],
+    options: [
+      'Extra-large, darkest basket',
+      'Small, light basket',
+      'Medium, light basket'
+    ],
+    answer: 'Extra-large, darkest basket'
   },
+
   {
-    sequence: ['🍵', '🌿', '🥟', '🍵', '🌿', '❓'],
-    options: ['🍵', '🥟', '🌸'],
-    answer: '🥟'
+    level: 'Medium',
+    prompt: 'Complete the number pattern:',
+    sequence: ['🧵 1 spool', '→', '🧵 2 spools', '→', '🧵 4 spools', '→', '?'],
+    options: ['🧵 6 spools', '🧵 8 spools', '🧵 10 spools'],
+    answer: '🧵 8 spools'
+  },
+
+  {
+    level: 'Medium',
+    prompt: 'Which row comes next in the pattern?',
+    sequence: [
+      '🌸 🎋 🌸 🎋',
+      '🎋 🌸 🎋 🌸',
+      '🌸 🎋 🌸 🎋',
+      '?'
+    ],
+    options: [
+      '🌸 🎋 🌸 🎋',
+      '🎋 🌸 🎋 🌸',
+      '🌸 🌸 🎋 🎋'
+    ],
+    answer: '🎋 🌸 🎋 🌸'
+  },
+
+  // 🔴 HARD — Varied Reasoning
+
+  {
+    level: 'Hard',
+    prompt: 'Dhol is used to create rhythm. Flute is used to create...?',
+    sequence: ['🥁 Dhol', '→', 'Rhythm', '   |   ', '🪈 Flute', '→', '?'],
+    options: ['Melody', 'Cooking', 'Farming'],
+    answer: 'Melody'
+  },
+
+  {
+    level: 'Hard',
+    prompt: 'Brick is used to make a solid wall. Woven bamboo is used to make a...?',
+    sequence: ['Brick', '→', 'Solid wall', '   |   ', 'Woven bamboo', '→', '?'],
+    options: ['Mat or screen', 'Metal wheel', 'Toy car'],
+    answer: 'Mat or screen'
+  },
+
+  {
+    level: 'Hard',
+    prompt: 'Rhinoceros lives in grassland. Red panda lives in...?',
+    sequence: ['🦏 Rhinoceros', '→', 'Grassland', '   |   ', '🐼 Red panda', '→', '?'],
+    options: ['Bamboo forest', 'Sandy beach', 'Open desert'],
+    answer: 'Bamboo forest'
   }
-]  
+]
+const currentPatternQuestions = patternQuestions.filter(
+  question => question.level.toLowerCase() === patternDifficulty
+)
+function getNextPatternDifficulty(currentDifficulty, score) {
+  if (currentDifficulty === 'easy') {
+    if (score === 3) return 'medium'
+    return 'easy'
+  }
+
+  if (currentDifficulty === 'medium') {
+    if (score === 3) return 'hard'
+    if (score <= 1) return 'easy'
+    return 'medium'
+  }
+
+  if (currentDifficulty === 'hard') {
+    if (score >= 2) return 'hard'
+    return 'medium'
+  }
+
+  return 'easy'
+}
 const storyRecallStories = [
   {
     story:
@@ -158,11 +264,23 @@ const storyRecallStories = [
   }
 
   function startMemoryGame() {
-    setCards(shuffleCards())
-    setSelected([])
-    setMoves(0)
-    setPage('memory')
-  }
+
+  const pairCount =
+    memoryDifficulty === 'easy'
+      ? 3
+      : memoryDifficulty === 'medium'
+      ? 6
+      : 12
+
+  setCards(shuffleCards(pairCount))
+
+  setSelected([])
+
+  setMoves(0)
+
+  setPage('memory')
+
+}
 
   function goHome() {
     setPage('home')
@@ -175,8 +293,18 @@ const storyRecallStories = [
   const matchedCount = cards.filter(card => card.matched).length
   const gameComplete = matchedCount === cards.length
   useEffect(() => {
-  if (gameComplete) {
+  if (gameComplete && cards.length > 0) {
     setMemoryGamesPlayed(previous => previous + 1)
+
+    const pairCount = cards.length / 2
+
+    const nextDifficulty = getNextDifficulty(
+      memoryDifficulty,
+      moves,
+      pairCount
+    )
+
+    setMemoryDifficulty(nextDifficulty)
   }
 }, [gameComplete])
 
@@ -359,7 +487,7 @@ pattern recognition.</p>
       <p>You completed Pattern Recognition!</p>
 
       <strong>
-        Your Score: {patternScore} / 5
+        Your Score: {patternScore} / 3
       </strong>
 
       <br />
@@ -397,43 +525,52 @@ pattern recognition.</p>
     <>
       <h2>Pattern Recognition 🧠</h2>
 
-      <p>What comes next in the pattern?</p>
+      <p>{currentPatternQuestions[patternQuestion].prompt}</p>
 
       <strong>
-        Question {patternQuestion + 1} / {patternQuestions.length}
+        Question {patternQuestion + 1} / {currentPatternQuestions.length}
       </strong>
 
       <div className="pattern-sequence">
-        {patternQuestions[patternQuestion].sequence.map((item, index) => (
+        {currentPatternQuestions[patternQuestion].sequence.map((item, index) => (
           <span key={index}>{item}</span>
         ))}
       </div>
 <h3>Answer Options</h3>
       <div className="pattern-options">
-        {patternQuestions[patternQuestion].options.map((option) => (
+        {currentPatternQuestions[patternQuestion].options.map((option) => (
           <button
             key={option}
             className="pattern-option"
-            onClick={() => {
-              if (patternComplete) return
+           onClick={() => {
+  if (patternComplete) return
 
-              if (option === patternQuestions[patternQuestion].answer) {
-                setPatternScore(prev => prev + 1)
-              }
+  const isCorrect =
+    option === currentPatternQuestions[patternQuestion].answer
 
-              if (patternQuestion < patternQuestions.length - 1) {
-                setPatternQuestion(prev => prev + 1)
-              } else {
-                setPatternComplete(true)
-              }
-            }}
+  const newScore = patternScore + (isCorrect ? 1 : 0)
+
+  setPatternScore(newScore)
+
+  if (patternQuestion < currentPatternQuestions.length - 1) {
+    setPatternQuestion(prev => prev + 1)
+  } else {
+    const nextDifficulty = getNextPatternDifficulty(
+      patternDifficulty,
+      newScore
+    )
+
+    setPatternDifficulty(nextDifficulty)
+    setPatternComplete(true)
+  }
+}}
           >
             {option}
           </button>
         ))}
       </div>
 
-      <strong>Score: {patternScore} / 5</strong>
+      <strong>Score: {patternScore} / {patternQuestions.length}</strong>
     </>
   )}
 </>
@@ -679,7 +816,7 @@ pattern recognition.</p>
           <div className="game-info">
             <strong>Moves: {moves}</strong>
             <strong>
-              Pairs: {matchedCount / 2} / 6
+             Pairs: {matchedCount / 2} / {cards.length / 2}
             </strong>
           </div>
 
@@ -738,7 +875,7 @@ pattern recognition.</p>
   </div>
 )}
 
-          <div className="memory-grid">
+          <div className={`memory-grid ${memoryDifficulty}`}>
             {cards.map(card => (
               <button
                 key={card.id}
